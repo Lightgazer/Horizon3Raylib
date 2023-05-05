@@ -133,7 +133,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Board.cpp" />
+    <ClCompile Include="GameScreen.cpp" />
+    <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Point.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="GameScreen.h" />
+    <ClInclude Include="GameSettings.h" />
+    <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="IGlobalState.h" />
+    <ClInclude Include="Point.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
