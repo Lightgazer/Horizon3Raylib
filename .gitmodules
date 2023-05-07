@@ -1,3 +1,6 @@
 [submodule "lib/raylib"]
 	path = lib/raylib
 	url = git@github.com:raysan5/raylib.git
+[submodule "lib/boolinq"]
+	path = lib/boolinq
+	url = git@github.com:k06a/boolinq.git
