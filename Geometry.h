@@ -15,6 +15,10 @@ struct Point
 	static Point FromIndex(const int& index, const int& size) {
 		return { index % size, index / size };
 	}
+
+	int ToIndex(const int& size) {
+		return Y * size + X;
+	}
 };
 
 Point operator+ (const Point& p1, const Point& p2);

@@ -1,5 +1,5 @@
 #pragma once
-#include "Point.h"
+#include "Geometry.h"
 
 Point operator+ (const Point& p1, const Point& p2)
 {

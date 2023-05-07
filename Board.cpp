@@ -6,18 +6,12 @@
 
 using namespace std;
 
-IdleTurn::IdleTurn() {
-	for (shared_ptr<BlockData>& block : Blocks) {
-		if (!block) {
-			block.reset(new BlockData{ GetRandomValue(0, GameSettings::NumberOfMarbleTypes - 1) });
-		}
-	}
-}
-
 bool IdleState::IsBlockSelected()
 {
 	return _selectedIndex.X != -1 || _selectedIndex.Y != -1;
 }
+
+IdleState::IdleState(unique_ptr<IdleTurn>&& turn) : _turn(move(turn)) {}
 
 void IdleState::Update(const float& delta, BoardContext* context)
 {
@@ -42,9 +36,9 @@ void IdleState::Update(const float& delta, BoardContext* context)
 }
 
 void IdleState::Draw(BoardContext* context) {
-	for (int i = 0; i < _turn.Blocks.size(); i++) {
+	for (int i = 0; i < _turn->Blocks.size(); i++) {
 		Point position = Point::FromIndex(i, GameSettings::GridSize) * GameSettings::BlockSize + BoardContext::Padding;
-		int& type = _turn.Blocks[i]->Type;
+		int& type = _turn->Blocks[i]->Type;
 		DrawTexture(context->MarbleTextures[type], position.X, position.Y, WHITE);
 		// DrawBonusIcon(spriteBatch, block, position);
 	}
@@ -61,24 +55,29 @@ Point BoardContext::BlockOrigin{ GameSettings::BlockSize / 2 };
 IntRect BoardContext::GridRectangle{ Padding, Point(SideLength) };
 
 BoardContext::BoardContext() :
-	_state(make_unique<IdleState>()),
-	_bombTexture(LoadTexture("resources/bonuses/bomb.png")),
-	_lineTexture(LoadTexture("resources/bonuses/line.png")),
 	MarbleTextures({
 		LoadTexture("resources/marbles/block0.png"),
 		LoadTexture("resources/marbles/block1.png"),
 		LoadTexture("resources/marbles/block2.png"),
 		LoadTexture("resources/marbles/block3.png"),
 		LoadTexture("resources/marbles/block4.png")
-		}),
-	FrameTexture(LoadTexture("resources/frame.png"))
+	}),
+	FrameTexture(LoadTexture("resources/frame.png")),
+	_state(nullptr),
+	_bombTexture(LoadTexture("resources/bonuses/bomb.png")),
+	_lineTexture(LoadTexture("resources/bonuses/line.png"))
 {
 	NextTurn();
 }
 
 void BoardContext::NextTurn()
 {
-	_state.reset(new IdleState());
+	unique_ptr<ITurn> turn = Model.GetNextTurn();
+	if (IdleTurn* idleTurn = dynamic_cast<IdleTurn*>(turn.get())) {
+		turn.release();
+		unique_ptr<IdleTurn> idleTurnPtr(idleTurn);
+		_state.reset(new IdleState(move(idleTurnPtr)));
+	}
 }
 
 void BoardContext::Update(const float& delta)

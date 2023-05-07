@@ -4,47 +4,37 @@
 #include <array>
 #include "raylib.h"
 #include "GameSettings.h"
-#include "Point.h"
+#include "Geometry.h"
+#include "GameModel.h"
 
 using namespace std;
 
-class IdleTurn;
 class BoardState;
 class IdleState;
 class BoardContext;
 
-struct BlockData
-{
-	int Type;
-};
-
-class IdleTurn
-{
-public:
-	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks> Blocks;
-
-	//Temp constructor
-	IdleTurn();
-};
-
 class BoardState
 {
 public:
+	virtual ~BoardState() = 0;
 	virtual void Update(const float& delta, BoardContext* context) = 0;
 	virtual void Draw(BoardContext* context) = 0;
 };
 
+inline BoardState::~BoardState() {}
+
 /// <summary>
 /// В этом состоянии игра ждёт когда игрок выберет два блока для свапа.
 /// </summary>
-class IdleState : public BoardState
+class IdleState : virtual public BoardState
 {
 private:
-	IdleTurn _turn;
+	unique_ptr<IdleTurn> _turn;
 	bool _wasButtonPressed = false;
 	Point _selectedIndex = Point(-1, -1);
 
 public:
+	IdleState(unique_ptr<IdleTurn>&& turn);
 	void Update(const float& delta, BoardContext* context) override;
 	void Draw(BoardContext* context) override;
 
@@ -60,13 +50,6 @@ private:
 /// </summary>
 class BoardContext
 {
-private:
-	static const int SideLength = GameSettings::GridSize * GameSettings::BlockSize;
-
-	unique_ptr<BoardState> _state;
-	Texture2D _bombTexture;
-	Texture2D _lineTexture;
-
 public:
 	static Point Padding;
 	static Point BlockOrigin;
@@ -75,6 +58,16 @@ public:
 	array<Texture2D, GameSettings::NumberOfMarbleTypes> MarbleTextures;
 	Texture2D FrameTexture;
 
+	GameModel Model;
+
+private:
+	static const int SideLength = GameSettings::GridSize * GameSettings::BlockSize;
+
+	unique_ptr<BoardState> _state;
+	Texture2D _bombTexture;
+	Texture2D _lineTexture;
+
+public:
 	BoardContext();
 	void NextTurn();
 	void Update(const float& delta);
