@@ -8,5 +8,6 @@ public:
 	static const int NumberOfMarbleTypes = 5;
 	static const int GridSize = 8;
 	static const int NumberOfBlocks = GridSize * GridSize;
+	static constexpr float AnimationSpeed = 3.0f;
 };
 

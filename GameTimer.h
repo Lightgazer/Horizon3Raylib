@@ -12,7 +12,7 @@ private:
 
 public:
 	GameTimer();
-	GameTimer(const float& seconds);
-	void Update(const float& delta);
+	GameTimer(const float seconds);
+	void Update(const float delta);
 	void Draw();
 };

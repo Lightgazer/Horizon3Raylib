@@ -17,7 +17,7 @@ class BoardState
 {
 public:
 	virtual ~BoardState() = 0;
-	virtual void Update(const float& delta, BoardContext* context) = 0;
+	virtual void Update(const float delta, BoardContext* context) = 0;
 	virtual void Draw(BoardContext* context) = 0;
 };
 
@@ -35,13 +35,66 @@ private:
 
 public:
 	IdleState(unique_ptr<IdleTurn>&& turn);
-	void Update(const float& delta, BoardContext* context) override;
+	void Update(const float delta, BoardContext* context) override;
 	void Draw(BoardContext* context) override;
 
 private:
 	bool IsBlockSelected();
 };
 
+/// <summary>
+/// ¬ этом состо€нии игра отображает анимацию уменьшени€ блоков попавших в матч 
+/// и анимацию бонусов. 
+/// </summary>
+class CascadeState : virtual public BoardState
+{
+public:
+	static constexpr float TargetSizeShrink = 0.8f;
+
+private:
+	unique_ptr<CascadeTurn> _turn;
+	array<float, GameSettings::NumberOfBlocks> _shrinkGrid = array<float, GameSettings::NumberOfBlocks>();
+	float _localShrink = 0;
+
+public:
+	CascadeState(unique_ptr<CascadeTurn>&& turn);
+	void Update(const float delta, BoardContext* context) override;
+	void Draw(BoardContext* context) override;
+
+private:
+	bool IsOver();
+};
+
+/// <summary>
+/// ¬ этом состо€нии игра отображает анимацию падени€ блоков на пустые места.
+/// </summary>
+class DropState : virtual public BoardState
+{
+private:
+	unique_ptr<DropTurn> _turn;
+	float _displacement = 0;
+
+public:
+	DropState(unique_ptr<DropTurn>&& turn);
+	void Update(const float delta, BoardContext* context) override;
+	void Draw(BoardContext* context) override;
+};
+
+/// <summary>
+/// ¬ этом состо€нии игра показывает анимацию где два блока мен€ютс€ местами.
+/// </summary>
+class SwapState : virtual public BoardState
+{
+private:
+	Vector2 _direction;
+	unique_ptr<SwapTurn> _turn;
+	float _displacement = -GameSettings::BlockSize;
+
+public:
+	SwapState(unique_ptr<SwapTurn>&& turn);
+	void Update(const float delta, BoardContext* context) override;
+	void Draw(BoardContext* context) override;
+};
 
 /// <summary>
 /// »гровое поле реализовано паттерном состо€ние. —осто€ни€ сами решают когда они
@@ -70,7 +123,7 @@ private:
 public:
 	BoardContext();
 	void NextTurn();
-	void Update(const float& delta);
+	void Update(const float delta);
 	void Draw();
 };
 

@@ -149,6 +149,7 @@
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="IGlobalState.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="MyMath.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

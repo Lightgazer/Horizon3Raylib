@@ -8,7 +8,7 @@ void GameScreen::ReStart()
 	_timer = GameTimer(60.0f);
 }
 
-void GameScreen::Update(const float& delta)
+void GameScreen::Update(const float delta)
 {
 	_grid.Update(delta);
 	_timer.Update(delta);

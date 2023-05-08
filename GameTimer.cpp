@@ -7,9 +7,9 @@ using namespace std;
 
 GameTimer::GameTimer() : _timeLeft(60.0f) { }
 
-GameTimer::GameTimer(const float& seconds) : _timeLeft(seconds) { }
+GameTimer::GameTimer(const float seconds) : _timeLeft(seconds) { }
 
-void GameTimer::Update(const float& delta)
+void GameTimer::Update(const float delta)
 {
 	_timeLeft -= delta;
 	_labelText = "Time Left: " + to_string(static_cast<int>(_timeLeft));

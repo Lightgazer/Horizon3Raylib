@@ -13,6 +13,6 @@ private:
 public:
 	GameScreen() {}
 	void ReStart();
-	void Update(const float& delta);
+	void Update(const float delta);
 	void Draw();
 };

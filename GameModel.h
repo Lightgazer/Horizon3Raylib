@@ -2,6 +2,7 @@
 
 #include <array>
 #include <vector>
+#include <unordered_set>
 #include "GameSettings.h"
 #include "Geometry.h"
 
@@ -15,10 +16,10 @@ struct BlockData
 
 struct SwapInfo
 {
-	Point First;
-	Point Second;
+	int First;
+	int Second;
 
-	SwapInfo(Point first, Point second) : First(first), Second(second) { }
+	SwapInfo(const int first = 0, const int second = 0) : First(first), Second(second) { }
 };
 
 class ITurn {
@@ -31,8 +32,38 @@ inline ITurn::~ITurn() {}
 class IdleTurn : virtual public ITurn
 {
 public:
-	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks> Blocks;
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
+
 	IdleTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks);
+};
+
+class CascadeTurn : virtual public ITurn
+{
+public:
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
+	vector<int>& Dead;
+
+	CascadeTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, vector<int>& dead);
+};
+
+class DropTurn : virtual public ITurn
+{
+public:
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
+	/// <summary> —писок блоков которые падают в текущем раунде. </summary>
+	unordered_set<int>& Drop;
+
+	DropTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, unordered_set<int>& drop);
+};
+
+class SwapTurn : virtual public ITurn
+{
+public:
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
+	int First;
+	int Second;
+
+	SwapTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, int first, int second);
 };
 
 class MatchChain {
@@ -51,6 +82,7 @@ enum ModelState {
 	Drop,
 	Idle,
 	Swap,
+	BackSwap
 };
 
 /// <summary>
@@ -62,20 +94,28 @@ class GameModel
 private:
 	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks> _blocks;
 	unique_ptr<SwapInfo> _swap;
-	ModelState _state;
+	ModelState _state = Matches;
 	int _score = 0;
+	vector<shared_ptr<MatchChain>> _matches;
+	vector<int> _deadFromMatch;
+	unordered_set<int> _dropList;
 
 public:
 	GameModel();
 	unique_ptr<ITurn> GetNextTurn();
-	bool SwapBlocks(Point& first, Point& second);
+	bool SwapBlocks(const int first, const int second);
 
 private:
-	static bool IsSwapAllowed(Point& first, Point& second);
-	vector<shared_ptr<MatchChain>> FindMatches();
-	vector<shared_ptr<Point>> CollectDead();
-	void FindMatches(vector<shared_ptr<MatchChain>>& result, bool vertical);
+	static bool IsSwapAllowed(const int first, const int second);
+	void FindMatches(vector<shared_ptr<MatchChain>>& matches);
+	void CollectDead(vector<int>&);
+	void FindMatches(vector<shared_ptr<MatchChain>>& result, const bool vertical);
 	///<summary>Ёлементы папавшие в матч тер€ют статус живых</summary>
 	///<returns>ќчки за исполнение матчей, с учЄтом их возможных пересечений</returns>
 	int ExecuteMatches(vector<shared_ptr<MatchChain>>& matches);
+	void CreateBlocksInFirstRow();
+	void MakeDropList(unordered_set<int>& dropList);
+	void DropBlocks(unordered_set<int>& dropList);
+	void ReleaseSuspects();
+	void ReturnSwapedBlocks();
 };
