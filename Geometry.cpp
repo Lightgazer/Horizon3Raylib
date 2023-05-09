@@ -45,6 +45,11 @@ Point operator/ (const Point point, const int divisor)
 	return { point.X / divisor, point.Y / divisor };
 }
 
+bool operator==(const Point p1, const Point p2)
+{
+	return p1.X == p2.X && p1.Y == p2.Y;
+}
+
 Vector2 operator+(const Vector2 v1, const Vector2 v2)
 {
 	return { v1.x + v2.x, v1.y + v2.y };

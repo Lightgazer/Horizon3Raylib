@@ -4,8 +4,10 @@
 
 GameModel::GameModel()
 {
-	for (shared_ptr<BlockData>& block : _blocks) {
-		if (!block) {
+	for (shared_ptr<BlockData>& block : _blocks)
+	{
+		if (!block)
+		{
 			block.reset(new BlockData{ GetRandomValue(0, GameSettings::NumberOfMarbleTypes - 1) });
 		}
 	}
@@ -19,25 +21,26 @@ unique_ptr<ITurn> GameModel::GetNextTurn()
 	case Matches:
 		if (_matches.size() > 0)
 		{
-			//var bonuses = CollectBonuses(matches);
+			vector<shared_ptr<Bonus>>&& bonuses = CollectBonuses(_matches);
 			_score += ExecuteMatches(_matches);
 			_matches.clear();
 			CollectDead(_deadFromMatch);
-			//Score += ExecuteBonuses(bonuses);
+			_score += ExecuteBonuses(bonuses);
 			_state = Drop;
-			return make_unique<CascadeTurn>(_blocks, _deadFromMatch); //bonuses
+			return make_unique<CascadeTurn>(_blocks, bonuses, _deadFromMatch);
 		}
 		_swap.reset();
 		_state = Idle;
 		return GetNextTurn();
 	case Drop:
-		//RestoreBonusBlocks(_deadFromMatch);
+		RestoreBonusBlocks(_deadFromMatch);
 		_deadFromMatch.clear();
 		DropBlocks(_dropList);
 		CreateBlocksInFirstRow();
 		_dropList.clear();
 		MakeDropList(_dropList);
-		if (_dropList.size() > 0) {
+		if (_dropList.size() > 0) 
+		{
 			return make_unique<DropTurn>(_blocks, _dropList);
 		}
 		FindMatches(_matches);
@@ -46,7 +49,8 @@ unique_ptr<ITurn> GameModel::GetNextTurn()
 		return GetNextTurn();
 	case Idle:
 		ReleaseSuspects();
-		if (_swap) {
+		if (_swap) 
+		{
 			_state = Swap;
 			return GetNextTurn();
 		}
@@ -57,7 +61,8 @@ unique_ptr<ITurn> GameModel::GetNextTurn()
 	case BackSwap:
 		FindMatches(_matches);
 		_state = _matches.size() > 0 ? Matches : Idle;
-		if (_state == Matches) {
+		if (_state == Matches) 
+		{
 			_swap.reset();
 			return GetNextTurn();
 		}
@@ -77,6 +82,8 @@ bool GameModel::SwapBlocks(const int first, const int second)
 	{
 		shared_ptr<BlockData> block1 = _blocks[first];
 		shared_ptr<BlockData> block2 = _blocks[second];
+		block1->Suspect = true;
+		block2->Suspect = true;
 		_blocks[first] = block2;
 		_blocks[second] = block1;
 		_swap.reset(new SwapInfo(first, second));
@@ -104,9 +111,9 @@ void GameModel::FindMatches(vector<shared_ptr<MatchChain>>& matches)
 
 void GameModel::CollectDead(vector<int>& result)
 {
-	for (int i = 0; i < _blocks.size(); i++) 
+	for (int i = 0; i < _blocks.size(); i++)
 	{
-		if (!_blocks[i]->Alive) 
+		if (!_blocks[i]->Alive)
 		{
 			result.push_back(i);
 		}
@@ -123,7 +130,7 @@ void GameModel::FindMatches(vector<shared_ptr<MatchChain>>& result, const bool v
 		{
 			Point point = vertical ? Point(k, j) : Point(j, k);
 			shared_ptr<BlockData> block = _blocks[point.ToIndex(GameSettings::GridSize)];
-			// if (block.Bonus is { }) block.Bonus.Target = new Point(x, y);
+			if (block->Bonus) block->Bonus->Target = point;
 			if (currentType == block->Type)
 			{
 				matchChain->Add(block);
@@ -159,7 +166,7 @@ void GameModel::CreateBlocksInFirstRow()
 
 void GameModel::MakeDropList(unordered_set<int>& dropList)
 {
-	for(int i = 0; i < _blocks.size(); i++) 
+	for (int i = 0; i < _blocks.size(); i++)
 	{
 		if (!_blocks[i]->Alive) {
 			int dropIndex = i;
@@ -174,7 +181,7 @@ void GameModel::MakeDropList(unordered_set<int>& dropList)
 void GameModel::DropBlocks(unordered_set<int>& dropList)
 {
 	unordered_map<int, shared_ptr<BlockData>> dropMap(dropList.size());
-	for (const int index : dropList) 
+	for (const int index : dropList)
 	{
 		dropMap[index] = move(_blocks[index]);
 		if (!dropMap[index]) {
@@ -182,7 +189,8 @@ void GameModel::DropBlocks(unordered_set<int>& dropList)
 		}
 	}
 
-	for (auto& [index, block] : dropMap) {
+	for (auto& [index, block] : dropMap) 
+	{
 		int lowerIndex = index + GameSettings::GridSize;
 		_blocks[lowerIndex] = move(block);
 	}
@@ -190,7 +198,9 @@ void GameModel::DropBlocks(unordered_set<int>& dropList)
 
 void GameModel::ReleaseSuspects()
 {
-     // _blocks.ForEach(block => block.Suspect = false);
+	for (shared_ptr<BlockData>& block : _blocks) {
+		block->Suspect = false;
+	}
 }
 
 void GameModel::ReturnSwapedBlocks()
@@ -201,11 +211,37 @@ void GameModel::ReturnSwapedBlocks()
 	_blocks[_swap->Second] = block1;
 }
 
+vector<shared_ptr<Bonus>> GameModel::CollectBonuses(vector<shared_ptr<MatchChain>>& matches)
+{
+	return boolinq::from(matches)
+		.selectMany([](shared_ptr<MatchChain> chain) { return boolinq::from(chain->Blocks); })
+		.where([](shared_ptr<BlockData> block) { return bool(block->Bonus); })
+		.select([](shared_ptr<BlockData> block) { return block->Bonus; })
+		.toStdVector();
+}
+
+int GameModel::ExecuteBonuses(vector<shared_ptr<Bonus>>& bonuses)
+{
+	return boolinq::from(bonuses)
+		.select([&](shared_ptr<Bonus> bonus) { return bonus->Execute(_blocks); })
+		.sum();
+}
+
+void GameModel::RestoreBonusBlocks(vector<int>& dead)
+{
+	for(int index : dead)
+	{
+		if (_blocks[index]->Bonus) _blocks[index]->Alive = true;
+	}
+}
+
 IdleTurn::IdleTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks) : Blocks(blocks) { }
 
-CascadeTurn::CascadeTurn
-	(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, vector<int>& dead)
-	: Blocks(blocks), Dead(dead) {}
+CascadeTurn::CascadeTurn(
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, 
+	vector<shared_ptr<Bonus>>& bonuses,
+	vector<int>& dead
+) : Blocks(blocks), Bonuses(bonuses), Dead(dead) {}
 
 DropTurn::DropTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, unordered_set<int>& drop)
 	: Blocks(blocks), Drop(drop) {}
@@ -228,23 +264,25 @@ bool MatchChain::HasEnoughLinks()
 int MatchChain::Execute()
 {
 	int score = boolinq::from(Blocks).count([](shared_ptr<BlockData> block) { return block->Alive; });
-	for (shared_ptr<BlockData> block : Blocks) 
+	for (shared_ptr<BlockData>& block : Blocks)
 	{
-		//Bonus bonus = null;
-		//if (!block.Alive)
-		//{
-		//	bonus = new BombBonus();
-		//}
-		//else if (block.Suspect && Blocks.Count > 3)
-		//{
-		//	if (Blocks.Count > 4)
-		//		bonus = new BombBonus();
-		//	else
-		//		bonus = new LineBonus(Vertical);
-		//}
+		if (!block->Alive)
+		{
+			block->Bonus.reset(new BombBonus());
+		}
+		else if (block->Suspect && Blocks.size() > 3)
+		{
+			if (Blocks.size() > 4)
+				block->Bonus.reset(new BombBonus());
+			else
+				block->Bonus.reset(new LineBonus(Vertical));
+		}
+		else 
+		{
+			block->Bonus.reset();
+		}
 
 		block->Alive = false;
-		//block.Bonus = bonus;
 	}
 	return 0;
 }

@@ -6,12 +6,48 @@
 #include "GameSettings.h"
 #include "Geometry.h"
 #include "GameModel.h"
+#include "BlockData.h"
 
 using namespace std;
 
+class BoardContext;
 class BoardState;
 class IdleState;
-class BoardContext;
+class CascadeState;
+class DropState;
+class SwapState;
+class BonusAnimation;
+
+/// <summary>
+/// Игровое поле реализовано паттерном состояние. Состояния сами решают когда они
+/// заканчиваются вызывая NextTurn у контекста. Контекст используя модель
+/// выбирает следующие состояние.
+/// </summary>
+class BoardContext
+{
+public:
+	static Point Padding;
+	static Vector2 BlockOrigin;
+	static IntRect GridRectangle;
+
+	array<Texture2D, GameSettings::NumberOfMarbleTypes> MarbleTextures;
+	Texture2D FrameTexture;
+	Texture2D BombTexture;
+	Texture2D LineTexture;
+
+	GameModel Model;
+
+private:
+	static const int SideLength = GameSettings::GridSize * GameSettings::BlockSize;
+
+	unique_ptr<BoardState> _state;
+
+public:
+	BoardContext();
+	void NextTurn();
+	void Update(const float delta);
+	void Draw();
+};
 
 class BoardState
 {
@@ -19,6 +55,9 @@ public:
 	virtual ~BoardState() = 0;
 	virtual void Update(const float delta, BoardContext* context) = 0;
 	virtual void Draw(BoardContext* context) = 0;
+
+protected:
+	void DrawBonusIcon(BoardContext* context, shared_ptr<BlockData> block, Vector2 position);
 };
 
 inline BoardState::~BoardState() {}
@@ -53,6 +92,7 @@ public:
 
 private:
 	unique_ptr<CascadeTurn> _turn;
+	vector<unique_ptr<BonusAnimation>> _bonuses = vector<unique_ptr<BonusAnimation>>();
 	array<float, GameSettings::NumberOfBlocks> _shrinkGrid = array<float, GameSettings::NumberOfBlocks>();
 	float _localShrink = 0;
 
@@ -96,34 +136,62 @@ public:
 	void Draw(BoardContext* context) override;
 };
 
-/// <summary>
-/// Игровое поле реализовано паттерном состояние. Состояния сами решают когда они
-/// заканчиваются вызывая NextTurn у контекста. Контекст используя модель
-/// выбирает следующие состояние.
-/// </summary>
-class BoardContext
+class BonusAnimation
 {
-public:
-	static Point Padding;
-	static Point BlockOrigin;
-	static IntRect GridRectangle;
-
-	array<Texture2D, GameSettings::NumberOfMarbleTypes> MarbleTextures;
-	Texture2D FrameTexture;
-
-	GameModel Model;
-
-private:
-	static const int SideLength = GameSettings::GridSize * GameSettings::BlockSize;
-
-	unique_ptr<BoardState> _state;
-	Texture2D _bombTexture;
-	Texture2D _lineTexture;
+protected:
+	bool _over = false;
+	Point _target;
 
 public:
-	BoardContext();
-	void NextTurn();
-	void Update(const float delta);
-	void Draw();
+	virtual ~BonusAnimation() = 0;
+	virtual void Update(float delta, array<float, GameSettings::NumberOfBlocks>& shrink) = 0;
+	virtual void Draw(BoardContext* context) = 0;
+	bool IsOver();
+	Point GetTarget();
+
+	static unique_ptr<BonusAnimation> Create(const shared_ptr<Bonus> bonus);
 };
 
+inline BonusAnimation::~BonusAnimation() { }
+
+class LineBonusAnimation : public BonusAnimation
+{
+private:
+	const shared_ptr<LineBonus> _data;
+	vector<unique_ptr<BonusAnimation>> _childs = vector<unique_ptr<BonusAnimation>>();
+	vector<int> _activeChilds = vector<int>();
+	vector<int> _activeDead = vector<int>();
+	float _destructorDisplacement = 0;
+	Point _destructorPosition{ 0 };
+
+public:
+	LineBonusAnimation(const shared_ptr<LineBonus>& bonus);
+	void Update(float delta, array<float, GameSettings::NumberOfBlocks>& shrink) override;
+	void Draw(BoardContext* context) override;
+
+private:
+	void DrawDestructor(BoardContext* context, Point position, float displacement);
+	bool MoveDestructor(float delta);
+	void ActivateChainedBonus(Point index);
+	void StartShrinkingBlock(Point index);
+	void ShrinkBlocks(float delta, array<float, GameSettings::NumberOfBlocks>& shrink);
+	bool CalculateOver(const array<float, GameSettings::NumberOfBlocks>& shrink);
+};
+
+class BombBonusAnimation : public BonusAnimation
+{
+private:
+	const shared_ptr<BombBonus> _data;
+	vector<unique_ptr<BonusAnimation>> _childs = vector<unique_ptr<BonusAnimation>>();
+	float _detonateTime = 0.25f;
+	float _shrinkSize = 0.0f;
+
+public:
+	BombBonusAnimation(const shared_ptr<BombBonus>& bonus);
+	void Update(float delta, array<float, GameSettings::NumberOfBlocks>& shrink) override;
+	void Draw(BoardContext* context) override;
+	void ShrinkBlocks(float delta, array<float, GameSettings::NumberOfBlocks>& shrink);
+
+private:
+	bool CalculateOver(const array<float, GameSettings::NumberOfBlocks>& shrink);
+};

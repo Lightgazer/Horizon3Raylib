@@ -5,14 +5,18 @@
 #include <unordered_set>
 #include "GameSettings.h"
 #include "Geometry.h"
+#include "BlockData.h"
 
 using namespace std;
 
-struct BlockData
-{
-	int Type;
-	bool Alive = true;
-};
+struct SwapInfo;
+class ITurn;
+class IdleTurn;
+class CascadeTurn;
+class DropTurn;
+class SwapTurn;
+class MatchChain;
+class GameModel;
 
 struct SwapInfo
 {
@@ -41,9 +45,16 @@ class CascadeTurn : virtual public ITurn
 {
 public:
 	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
+	/// <summary> —писок бонусов сработавших в этом раунде. </summary>
+	vector<shared_ptr<Bonus>>& Bonuses;
+	/// <summary> »ндексы которые умерли в текущем раунде от матчей, без учЄта бонусов. </summary>
 	vector<int>& Dead;
 
-	CascadeTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, vector<int>& dead);
+	CascadeTurn(
+		array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, 
+		vector<shared_ptr<Bonus>>& bonuses,
+		vector<int>& dead
+	);
 };
 
 class DropTurn : virtual public ITurn
@@ -108,7 +119,7 @@ public:
 private:
 	static bool IsSwapAllowed(const int first, const int second);
 	void FindMatches(vector<shared_ptr<MatchChain>>& matches);
-	void CollectDead(vector<int>&);
+	void CollectDead(vector<int>& dead);
 	void FindMatches(vector<shared_ptr<MatchChain>>& result, const bool vertical);
 	///<summary>Ёлементы папавшие в матч тер€ют статус живых</summary>
 	///<returns>ќчки за исполнение матчей, с учЄтом их возможных пересечений</returns>
@@ -118,4 +129,11 @@ private:
 	void DropBlocks(unordered_set<int>& dropList);
 	void ReleaseSuspects();
 	void ReturnSwapedBlocks();
+	vector<shared_ptr<Bonus>> CollectBonuses(vector<shared_ptr<MatchChain>>& matches);
+	///<returns>ќчки за исполнение бонусов, учитываютс€ только живые блоки</returns>
+	int ExecuteBonuses(vector<shared_ptr<Bonus>>& bonuses);
+	/// <summary>
+	/// »з списка попавших в матч восстонавливает тех кто получил бонус.
+	/// </summary>
+	void RestoreBonusBlocks(vector<int>& dead);
 };

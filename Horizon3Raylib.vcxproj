@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="BlockData.cpp" />
     <ClCompile Include="GameModel.cpp" />
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="GameTimer.cpp" />
@@ -143,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="BlockData.h" />
     <ClInclude Include="GameModel.h" />
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="GameSettings.h" />

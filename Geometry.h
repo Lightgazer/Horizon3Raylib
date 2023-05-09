@@ -1,6 +1,9 @@
 #pragma once
 #include "raylib.h"
 
+struct Point;
+struct IntRect;
+
 struct Point
 {
 	int X;
@@ -32,6 +35,7 @@ Point operator- (const Point point);
 Point& operator-= (Point& p1, const Point p2);
 Point operator* (const Point point, const int factor);
 Point operator/ (const Point point, const int divisor);
+bool operator== (const Point p1, const Point p2);
 
 Vector2 operator+ (const Vector2 v1, const Vector2 v2);
 Vector2 operator+ (const Vector2 vector);
