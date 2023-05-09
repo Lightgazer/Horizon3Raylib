@@ -239,7 +239,7 @@ IdleTurn::IdleTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& b
 
 CascadeTurn::CascadeTurn(
 	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, 
-	vector<shared_ptr<Bonus>>& bonuses,
+	vector<shared_ptr<Bonus>> bonuses,
 	vector<int>& dead
 ) : Blocks(blocks), Bonuses(bonuses), Dead(dead) {}
 

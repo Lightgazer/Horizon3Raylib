@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <memory>
+#include <optional>
 #include "raylib.h"
 #include "Board.h"
 #include "MyMath.h"
@@ -74,7 +75,7 @@ void BoardContext::Draw()
 
 void BoardState::DrawBonusIcon(BoardContext* context, shared_ptr<BlockData> block, Vector2 position)
 {
-	Texture2D& texture = context->BombTexture;
+	std::optional<Texture2D> texture = std::nullopt;
 	float rotation = 0.0f;
 	if (shared_ptr<LineBonus> line = static_pointer_cast<LineBonus>(block->Bonus))
 	{
@@ -84,8 +85,15 @@ void BoardState::DrawBonusIcon(BoardContext* context, shared_ptr<BlockData> bloc
 			rotation = 1.57f;
 		}
 	} 
-	float width = static_cast<float>(texture.width);
-	float height = static_cast<float>(texture.height);
+	else if (shared_ptr<BombBonus> line = static_pointer_cast<BombBonus>(block->Bonus))
+	{
+		texture = context->BombTexture;
+	}
+
+	if (!texture.has_value()) return;
+
+	float width = static_cast<float>(texture->width);
+	float height = static_cast<float>(texture->height);
 	Rectangle dest =
 	{
 		position.x + context->BlockOrigin.x,
@@ -93,7 +101,7 @@ void BoardState::DrawBonusIcon(BoardContext* context, shared_ptr<BlockData> bloc
 		width,
 		height
 	};
-	DrawTexturePro(texture, { 0, 0, width, height }, dest, context->BlockOrigin, rotation, WHITE);
+	DrawTexturePro(texture.value(), {0, 0, width, height}, dest, context->BlockOrigin, rotation, WHITE);
 }
 
 IdleState::IdleState(unique_ptr<IdleTurn>&& turn) : _turn(move(turn)) {}

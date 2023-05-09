@@ -46,13 +46,13 @@ class CascadeTurn : virtual public ITurn
 public:
 	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
 	/// <summary> Список бонусов сработавших в этом раунде. </summary>
-	vector<shared_ptr<Bonus>>& Bonuses;
+	vector<shared_ptr<Bonus>> Bonuses;
 	/// <summary> Индексы которые умерли в текущем раунде от матчей, без учёта бонусов. </summary>
 	vector<int>& Dead;
 
 	CascadeTurn(
 		array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, 
-		vector<shared_ptr<Bonus>>& bonuses,
+		vector<shared_ptr<Bonus>> bonuses,
 		vector<int>& dead
 	);
 };
