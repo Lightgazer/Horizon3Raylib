@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <array>
 #include <vector>
@@ -45,9 +45,9 @@ class CascadeTurn : virtual public ITurn
 {
 public:
 	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks> Blocks;
-	/// <summary> Список бонусов сработавших в этом раунде. </summary>
+	/// <summary> РЎРїРёСЃРѕРє Р±РѕРЅСѓСЃРѕРІ СЃСЂР°Р±РѕС‚Р°РІС€РёС… РІ СЌС‚РѕРј СЂР°СѓРЅРґРµ. </summary>
 	vector<shared_ptr<Bonus>> Bonuses;
-	/// <summary> Индексы которые умерли в текущем раунде от матчей, без учёта бонусов. </summary>
+	/// <summary> РРЅРґРµРєСЃС‹ РєРѕС‚РѕСЂС‹Рµ СѓРјРµСЂР»Рё РІ С‚РµРєСѓС‰РµРј СЂР°СѓРЅРґРµ РѕС‚ РјР°С‚С‡РµР№, Р±РµР· СѓС‡С‘С‚Р° Р±РѕРЅСѓСЃРѕРІ. </summary>
 	vector<int> Dead;
 
 	CascadeTurn(
@@ -61,7 +61,7 @@ class DropTurn : virtual public ITurn
 {
 public:
 	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks> Blocks;
-	/// <summary> Список блоков которые падают в текущем раунде. </summary>
+	/// <summary> РЎРїРёСЃРѕРє Р±Р»РѕРєРѕРІ РєРѕС‚РѕСЂС‹Рµ РїР°РґР°СЋС‚ РІ С‚РµРєСѓС‰РµРј СЂР°СѓРЅРґРµ. </summary>
 	unordered_set<int> Drop;
 
 	DropTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, unordered_set<int>& drop);
@@ -97,8 +97,8 @@ enum ModelState {
 };
 
 /// <summary>
-/// Пассивная модель. Модель отвечает исполнение правил игры. Игра представлена 
-/// поледовательностью раундов разного типа, генерируемых моделью.
+/// РџР°СЃСЃРёРІРЅР°СЏ РјРѕРґРµР»СЊ. РњРѕРґРµР»СЊ РѕС‚РІРµС‡Р°РµС‚ РёСЃРїРѕР»РЅРµРЅРёРµ РїСЂР°РІРёР» РёРіСЂС‹. РРіСЂР° РїСЂРµРґСЃС‚Р°РІР»РµРЅР° 
+/// РїРѕР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊСЋ СЂР°СѓРЅРґРѕРІ СЂР°Р·РЅРѕРіРѕ С‚РёРїР°, РіРµРЅРµСЂРёСЂСѓРµРјС‹С… РјРѕРґРµР»СЊСЋ.
 /// </summary>
 class GameModel
 {
@@ -122,8 +122,8 @@ private:
 	void FindMatches(vector<shared_ptr<MatchChain>>& matches);
 	void CollectDead(vector<int>& dead);
 	void FindMatches(vector<shared_ptr<MatchChain>>& result, const bool vertical);
-	///<summary>Элементы папавшие в матч теряют статус живых</summary>
-	///<returns>Очки за исполнение матчей, с учётом их возможных пересечений</returns>
+	///<summary>Р­Р»РµРјРµРЅС‚С‹ РїР°РїР°РІС€РёРµ РІ РјР°С‚С‡ С‚РµСЂСЏСЋС‚ СЃС‚Р°С‚СѓСЃ Р¶РёРІС‹С…</summary>
+	///<returns>РћС‡РєРё Р·Р° РёСЃРїРѕР»РЅРµРЅРёРµ РјР°С‚С‡РµР№, СЃ СѓС‡С‘С‚РѕРј РёС… РІРѕР·РјРѕР¶РЅС‹С… РїРµСЂРµСЃРµС‡РµРЅРёР№</returns>
 	int ExecuteMatches(vector<shared_ptr<MatchChain>>& matches);
 	void CreateBlocksInFirstRow();
 	void MakeDropList(unordered_set<int>& dropList);
@@ -131,10 +131,10 @@ private:
 	void ReleaseSuspects();
 	void ReturnSwapedBlocks();
 	vector<shared_ptr<Bonus>> CollectBonuses(vector<shared_ptr<MatchChain>>& matches);
-	///<returns>Очки за исполнение бонусов, учитываются только живые блоки</returns>
+	///<returns>РћС‡РєРё Р·Р° РёСЃРїРѕР»РЅРµРЅРёРµ Р±РѕРЅСѓСЃРѕРІ, СѓС‡РёС‚С‹РІР°СЋС‚СЃСЏ С‚РѕР»СЊРєРѕ Р¶РёРІС‹Рµ Р±Р»РѕРєРё</returns>
 	int ExecuteBonuses(vector<shared_ptr<Bonus>>& bonuses);
 	/// <summary>
-	/// Из списка попавших в матч восстонавливает тех кто получил бонус.
+	/// РР· СЃРїРёСЃРєР° РїРѕРїР°РІС€РёС… РІ РјР°С‚С‡ РІРѕСЃСЃС‚РѕРЅР°РІР»РёРІР°РµС‚ С‚РµС… РєС‚Рѕ РїРѕР»СѓС‡РёР» Р±РѕРЅСѓСЃ.
 	/// </summary>
 	void RestoreBonusBlocks(vector<int>& dead);
 };
