@@ -77,15 +77,15 @@ void BoardState::DrawBonusIcon(BoardContext* context, shared_ptr<BlockData> bloc
 {
 	std::optional<Texture2D> texture = std::nullopt;
 	float rotation = 0.0f;
-	if (shared_ptr<LineBonus> line = static_pointer_cast<LineBonus>(block->Bonus))
+	if (shared_ptr<LineBonus> line = dynamic_pointer_cast<LineBonus>(block->Bonus))
 	{
 		texture = context->LineTexture;
 		if (!line->Vertical)
 		{
-			rotation = 1.57f;
+			rotation = 90.0f;
 		}
 	} 
-	else if (shared_ptr<BombBonus> line = static_pointer_cast<BombBonus>(block->Bonus))
+	else if (shared_ptr<BombBonus> line = dynamic_pointer_cast<BombBonus>(block->Bonus))
 	{
 		texture = context->BombTexture;
 	}
@@ -161,7 +161,7 @@ void CascadeState::Update(const float time, BoardContext* context)
 {
 	float delta = GameSettings::AnimationSpeed * time;
 	_localShrink = MoveTowards(_localShrink, TargetSizeShrink, delta);
-	for (const int index : _turn->Dead) 
+	for (const int index : _turn->Dead)
 	{
 		_shrinkGrid[index] = _localShrink;
 	}
@@ -202,7 +202,11 @@ void CascadeState::Draw(BoardContext* context)
 
 bool CascadeState::IsOver()
 {
-	return abs(_localShrink - TargetSizeShrink) < FLT_EPSILON; // && _bonuses.All(bonus => bonus.Over);
+	for (unique_ptr<BonusAnimation>& bonus : _bonuses)
+	{
+		if (!bonus->IsOver()) return false;
+	}
+	return abs(_localShrink - TargetSizeShrink) < FLT_EPSILON;
 }
 
 DropState::DropState(unique_ptr<DropTurn>&& turn) : _turn(move(turn)) {}
@@ -274,10 +278,10 @@ Point BonusAnimation::GetTarget()
 
 unique_ptr<BonusAnimation> BonusAnimation::Create(const shared_ptr<Bonus> bonus)
 {
-	if (const shared_ptr<LineBonus> line = static_pointer_cast<LineBonus>(bonus)) {
+	if (const shared_ptr<LineBonus> line = dynamic_pointer_cast<LineBonus>(bonus)) {
 		return make_unique<LineBonusAnimation>(line);
 	}
-	if (const shared_ptr<BombBonus> bomb = static_pointer_cast<BombBonus>(bonus)) {
+	if (const shared_ptr<BombBonus> bomb = dynamic_pointer_cast<BombBonus>(bonus)) {
 		return make_unique<BombBonusAnimation>(bomb);
 	}
 	throw std::logic_error("Bonus animation missing");
@@ -328,7 +332,7 @@ void LineBonusAnimation::Draw(BoardContext* context)
 
 void LineBonusAnimation::DrawDestructor(BoardContext* context, Point position, float displacement)
 {
-	float rotation = _data->Vertical ? 0.0f : 1.57f;
+	float rotation = _data->Vertical ? 0.0f : 90.0f;
 	Point blockIndex = GetTarget() + position;
 	Vector2 screenPosition = (blockIndex * GameSettings::BlockSize + BoardContext::Padding).ToVector2();
 	screenPosition += _data->Vertical ? Vector2(0, displacement) : Vector2(displacement, 0);
@@ -372,7 +376,7 @@ void LineBonusAnimation::ActivateChainedBonus(Point target)
 
 void LineBonusAnimation::StartShrinkingBlock(Point point)
 {
-	if (std::count(_data->Dead.begin(), _data->Dead.end(), point))
+	if (std::count(_data->Dead.begin(), _data->Dead.end(), point.ToIndex(GameSettings::GridSize)))
 		_activeDead.push_back(point.ToIndex(GameSettings::GridSize));
 }
 
@@ -413,7 +417,7 @@ void BombBonusAnimation::Update(float delta, array<float, GameSettings::NumberOf
 	if (_over) return;
 	if (_detonateTime > 0)
 	{
-		_detonateTime -= delta / 1000;
+		_detonateTime -= delta;
 	}
 	else
 	{
@@ -451,7 +455,7 @@ bool BombBonusAnimation::CalculateOver(const array<float, GameSettings::NumberOf
 	}
 	for (int index : _data->Dead)
 	{
-		if (abs(shrink[index] - CascadeState::TargetSizeShrink) < FLT_EPSILON) return false;
+		if (!(abs(shrink[index] - CascadeState::TargetSizeShrink) < FLT_EPSILON)) return false;
 	}
 	return true;
 }

@@ -48,10 +48,15 @@ unique_ptr<ITurn> GameModel::GetNextTurn()
 		_state = _matches.size() > 0 ? Matches : Idle;
 		return GetNextTurn();
 	case Idle:
-		ReleaseSuspects();
 		if (_swap) 
 		{
 			_state = Swap;
+			return GetNextTurn();
+		}
+		ReleaseSuspects();
+		FindMatches(_matches);
+		if (_matches.size() > 0) {
+			_state = Matches;
 			return GetNextTurn();
 		}
 		return make_unique<IdleTurn>(_blocks);
@@ -142,15 +147,20 @@ void GameModel::FindMatches(vector<shared_ptr<MatchChain>>& result, const bool v
 				matchChain = make_shared<MatchChain>(vertical);
 				matchChain->Add(block);
 			}
-
-			if (matchChain->HasEnoughLinks()) result.push_back(matchChain);
 		}
+
+		if (matchChain->HasEnoughLinks()) result.push_back(matchChain);
 	}
 }
 
 int GameModel::ExecuteMatches(vector<shared_ptr<MatchChain>>& matches)
 {
-	return boolinq::from(matches).sum([](shared_ptr<MatchChain> match) { return match->Execute(); });
+	int result = 0;
+	for (shared_ptr<MatchChain>& match : matches)
+	{
+		result += match->Execute();
+	}
+	return result;
 }
 
 void GameModel::CreateBlocksInFirstRow()
@@ -222,9 +232,12 @@ vector<shared_ptr<Bonus>> GameModel::CollectBonuses(vector<shared_ptr<MatchChain
 
 int GameModel::ExecuteBonuses(vector<shared_ptr<Bonus>>& bonuses)
 {
-	return boolinq::from(bonuses)
-		.select([&](shared_ptr<Bonus> bonus) { return bonus->Execute(_blocks); })
-		.sum();
+	int result = 0;
+	for (shared_ptr<Bonus>& bonus : bonuses)
+	{
+		result += bonus->Execute(_blocks);
+	}
+	return result;
 }
 
 void GameModel::RestoreBonusBlocks(vector<int>& dead)
