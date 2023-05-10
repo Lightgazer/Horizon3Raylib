@@ -2,6 +2,8 @@
 
 #include "GameScreen.h"
 
+GameScreen::GameScreen() : _grid(), _scoreWidget(), _timer(60.f) {}
+
 void GameScreen::ReStart()
 {
 	_grid = BoardContext();
@@ -11,6 +13,10 @@ void GameScreen::ReStart()
 
 void GameScreen::Update(const float delta)
 {
+	if (_timer.IsTimeout()) 
+	{
+		RequestNextState();
+	}
 	_grid.Update(delta);
 	_scoreWidget.SetScore(_grid.Model.GetScore());
 	_timer.Update(delta);

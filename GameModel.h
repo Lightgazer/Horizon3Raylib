@@ -36,7 +36,7 @@ inline ITurn::~ITurn() {}
 class IdleTurn : virtual public ITurn
 {
 public:
-	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks> Blocks;
 
 	IdleTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks);
 };
@@ -44,11 +44,11 @@ public:
 class CascadeTurn : virtual public ITurn
 {
 public:
-	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks> Blocks;
 	/// <summary> Список бонусов сработавших в этом раунде. </summary>
 	vector<shared_ptr<Bonus>> Bonuses;
 	/// <summary> Индексы которые умерли в текущем раунде от матчей, без учёта бонусов. </summary>
-	vector<int>& Dead;
+	vector<int> Dead;
 
 	CascadeTurn(
 		array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, 
@@ -60,9 +60,9 @@ public:
 class DropTurn : virtual public ITurn
 {
 public:
-	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks> Blocks;
 	/// <summary> Список блоков которые падают в текущем раунде. </summary>
-	unordered_set<int>& Drop;
+	unordered_set<int> Drop;
 
 	DropTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, unordered_set<int>& drop);
 };
@@ -70,7 +70,7 @@ public:
 class SwapTurn : virtual public ITurn
 {
 public:
-	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& Blocks;
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks> Blocks;
 	int First;
 	int Second;
 

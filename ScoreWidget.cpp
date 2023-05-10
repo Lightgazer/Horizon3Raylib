@@ -11,5 +11,5 @@ void ScoreWidget::SetScore(int score)
 
 void ScoreWidget::Draw()
 {
-	DrawText(("Score: " + to_string(_score)).c_str(), GameSettings::Width * 0.8, 10, 20, DARKGRAY);
+	DrawText(("Score: " + to_string(_score)).c_str(), static_cast<int>(GameSettings::Width * 0.8), 10, 20, DARKGRAY);
 }

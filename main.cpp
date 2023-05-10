@@ -1,11 +1,11 @@
 #include "raylib.h"
-#include "GameScreen.h"
+#include "GlobalStateContext.h"
 #include "GameSettings.h"
 
 int main(void)
 {
 	InitWindow(GameSettings::Width, GameSettings::Height, "Horizon3Raylib");
-	GameScreen gameScreen;
+	GlobalStateContext game;
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose())
@@ -13,14 +13,14 @@ int main(void)
 		// Update
 		//----------------------------------------------------------------------------------
 		const float deltaTime = GetFrameTime();
-		gameScreen.Update(deltaTime);
+		game.Update(deltaTime);
 		//----------------------------------------------------------------------------------
 
 		// Draw
 		//----------------------------------------------------------------------------------
 		BeginDrawing();
 		ClearBackground(LIGHTGRAY);
-		gameScreen.Draw();
+		game.Draw();
 		EndDrawing();
 		//----------------------------------------------------------------------------------
 	}

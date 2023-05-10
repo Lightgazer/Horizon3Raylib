@@ -1,10 +1,12 @@
 #pragma once
 
+#include <functional>
 #include "GameTimer.h"
 #include "Board.h"
 #include "ScoreWidget.h"
+#include "GlobalState.h"
 
-class GameScreen
+class GameScreen : public GlobalState
 {
 private:
 	BoardContext _grid;
@@ -12,7 +14,8 @@ private:
 	GameTimer _timer;
 
 public:
-	void ReStart();
-	void Update(const float delta);
-	void Draw();
+	GameScreen();
+	void ReStart() override;
+	void Update(const float delta) override;
+	void Draw() override;
 };

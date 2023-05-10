@@ -11,8 +11,8 @@ private:
 	string _labelText;
 
 public:
-	GameTimer();
 	GameTimer(const float seconds);
 	void Update(const float delta);
 	void Draw();
+	bool IsTimeout();
 };

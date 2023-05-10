@@ -136,24 +136,33 @@
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="BlockData.cpp" />
+    <ClCompile Include="EndMenu.cpp" />
     <ClCompile Include="GameModel.cpp" />
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="GlobalState.cpp" />
+    <ClCompile Include="GlobalStateContext.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="ScoreWidget.cpp" />
+    <ClCompile Include="UIElement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="BlockData.h" />
+    <ClInclude Include="EndMenu.h" />
     <ClInclude Include="GameModel.h" />
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="GameTimer.h" />
-    <ClInclude Include="IGlobalState.h" />
+    <ClInclude Include="GlobalStateContext.h" />
+    <ClInclude Include="GlobalState.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MyMath.h" />
     <ClInclude Include="ScoreWidget.h" />
+    <ClInclude Include="UIElement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
