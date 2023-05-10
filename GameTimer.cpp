@@ -2,6 +2,7 @@
 #include <string>
 #include "raylib.h"
 #include "GameTimer.h"
+#include "GameSettings.h"
 
 using namespace std;
 
@@ -18,5 +19,5 @@ void GameTimer::Update(const float delta)
 
 void GameTimer::Draw()
 {
-	DrawText(_labelText.c_str(), 10, 10, 20, DARKGRAY);
+	DrawText(_labelText.c_str(), GameSettings::Width * 0.1, 10, 20, DARKGRAY);
 }

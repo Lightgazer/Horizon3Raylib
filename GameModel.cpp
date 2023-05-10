@@ -97,6 +97,11 @@ bool GameModel::SwapBlocks(const int first, const int second)
 	return false;
 }
 
+int GameModel::GetScore()
+{
+	return _score;
+}
+
 bool GameModel::IsSwapAllowed(const int index1, const int index2)
 {
 	Point first = Point::FromIndex(index1, GameSettings::GridSize);
@@ -297,5 +302,5 @@ int MatchChain::Execute()
 
 		block->Alive = false;
 	}
-	return 0;
+	return score;
 }

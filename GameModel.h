@@ -115,6 +115,7 @@ public:
 	GameModel();
 	unique_ptr<ITurn> GetNextTurn();
 	bool SwapBlocks(const int first, const int second);
+	int GetScore();
 
 private:
 	static bool IsSwapAllowed(const int first, const int second);
