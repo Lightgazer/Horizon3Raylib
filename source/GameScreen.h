@@ -1,9 +1,9 @@
 #pragma once
 
 #include <functional>
-#include "GameTimer.h"
-#include "Board.h"
-#include "ScoreWidget.h"
+#include "boardScene/GameTimer.h"
+#include "boardScene/Board.h"
+#include "boardScene/ScoreWidget.h"
 #include "GlobalState.h"
 
 class GameScreen : public GlobalState

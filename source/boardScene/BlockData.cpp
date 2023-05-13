@@ -1,7 +1,7 @@
 #include <array>
 #include "BlockData.h"
 #include "GameSettings.h"
-#include "lib/boolinq/include/boolinq/boolinq.h"
+#include "boolinq/boolinq.h"
 
 int Bonus::Execute(const array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks)
 {

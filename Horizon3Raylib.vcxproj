@@ -70,12 +70,25 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)source;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)source;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)source;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)source;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\raylib\out\build\$(Platform)-$(Configuration)\raylib\include;$(SolutionDir)lib\boolinq\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -90,6 +103,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\raylib\out\build\$(Platform)-$(Configuration)\raylib\include;$(SolutionDir)lib\boolinq\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,7 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\raylib\out\build\$(Platform)-$(Configuration)\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\raylib\out\build\$(Platform)-$(Configuration)\raylib\include;$(SolutionDir)lib\boolinq\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -122,7 +136,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\raylib\out\build\$(Platform)-$(Configuration)\raylib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\raylib\out\build\$(Platform)-$(Configuration)\raylib\include;$(SolutionDir)lib\boolinq\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,35 +148,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Board.cpp" />
-    <ClCompile Include="BlockData.cpp" />
-    <ClCompile Include="EndMenu.cpp" />
-    <ClCompile Include="GameModel.cpp" />
-    <ClCompile Include="GameScreen.cpp" />
-    <ClCompile Include="GameTimer.cpp" />
-    <ClCompile Include="GlobalState.cpp" />
-    <ClCompile Include="GlobalStateContext.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="MainMenu.cpp" />
-    <ClCompile Include="ScoreWidget.cpp" />
-    <ClCompile Include="UIElement.cpp" />
+    <ClCompile Include="source\boardScene\Board.cpp" />
+    <ClCompile Include="source\boardScene\BlockData.cpp" />
+    <ClCompile Include="source\EndMenu.cpp" />
+    <ClCompile Include="source\boardScene\GameModel.cpp" />
+    <ClCompile Include="source\GameScreen.cpp" />
+    <ClCompile Include="source\boardScene\GameTimer.cpp" />
+    <ClCompile Include="source\GlobalState.cpp" />
+    <ClCompile Include="source\GlobalStateContext.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\utils\Geometry.cpp" />
+    <ClCompile Include="source\MainMenu.cpp" />
+    <ClCompile Include="source\boardScene\ScoreWidget.cpp" />
+    <ClCompile Include="source\UIElement.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Board.h" />
-    <ClInclude Include="BlockData.h" />
-    <ClInclude Include="EndMenu.h" />
-    <ClInclude Include="GameModel.h" />
-    <ClInclude Include="GameScreen.h" />
-    <ClInclude Include="GameSettings.h" />
-    <ClInclude Include="GameTimer.h" />
-    <ClInclude Include="GlobalStateContext.h" />
-    <ClInclude Include="GlobalState.h" />
-    <ClInclude Include="Geometry.h" />
-    <ClInclude Include="MainMenu.h" />
-    <ClInclude Include="MyMath.h" />
-    <ClInclude Include="ScoreWidget.h" />
-    <ClInclude Include="UIElement.h" />
+    <ClInclude Include="source\boardScene\Board.h" />
+    <ClInclude Include="source\boardScene\BlockData.h" />
+    <ClInclude Include="source\EndMenu.h" />
+    <ClInclude Include="source\boardScene\GameModel.h" />
+    <ClInclude Include="source\GameScreen.h" />
+    <ClInclude Include="source\GameSettings.h" />
+    <ClInclude Include="source\boardScene\GameTimer.h" />
+    <ClInclude Include="source\GlobalStateContext.h" />
+    <ClInclude Include="source\GlobalState.h" />
+    <ClInclude Include="source\utils\Geometry.h" />
+    <ClInclude Include="source\MainMenu.h" />
+    <ClInclude Include="source\utils\MyMath.h" />
+    <ClInclude Include="source\boardScene\ScoreWidget.h" />
+    <ClInclude Include="source\UIElement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

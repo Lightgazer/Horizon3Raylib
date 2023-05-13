@@ -1,5 +1,5 @@
 #include <memory>
-#include "lib/boolinq/include/boolinq/boolinq.h"
+#include "boolinq/boolinq.h"
 #include "GameModel.h"
 
 GameModel::GameModel()

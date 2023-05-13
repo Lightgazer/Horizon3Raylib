@@ -4,7 +4,7 @@
 #include <vector>
 #include <unordered_set>
 #include "GameSettings.h"
-#include "Geometry.h"
+#include "utils/Geometry.h"
 #include "BlockData.h"
 
 using namespace std;

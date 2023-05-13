@@ -5,8 +5,8 @@
 #include <optional>
 #include "raylib.h"
 #include "Board.h"
-#include "MyMath.h"
-#include "lib/boolinq/include/boolinq/boolinq.h"
+#include "utils/MyMath.h"
+#include "boolinq/boolinq.h"
 
 using namespace std;
 

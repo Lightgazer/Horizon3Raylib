@@ -4,7 +4,7 @@
 #include <array>
 #include "raylib.h"
 #include "GameSettings.h"
-#include "Geometry.h"
+#include "utils/Geometry.h"
 #include "GameModel.h"
 #include "BlockData.h"
 

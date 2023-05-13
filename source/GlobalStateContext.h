@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <memory>
 #include "GlobalState.h"
 #include "GameScreen.h"
 #include "EndMenu.h"
