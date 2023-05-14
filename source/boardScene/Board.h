@@ -5,8 +5,8 @@
 #include "raylib.h"
 #include "GameSettings.h"
 #include "utils/Geometry.h"
-#include "GameModel.h"
-#include "BlockData.h"
+#include "model/GameModel.h"
+#include "model/BlockData.h"
 
 using namespace std;
 

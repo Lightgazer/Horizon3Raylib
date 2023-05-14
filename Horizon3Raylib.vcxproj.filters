@@ -30,10 +30,10 @@
     <ClCompile Include="source\utils\Geometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\boardScene\GameModel.cpp">
+    <ClCompile Include="source\boardScene\model\GameModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\boardScene\BlockData.cpp">
+    <ClCompile Include="source\boardScene\model\BlockData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\boardScene\ScoreWidget.cpp">
@@ -71,13 +71,13 @@
     <ClInclude Include="source\GameScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\boardScene\GameModel.h">
+    <ClInclude Include="source\boardScene\model\GameModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\utils\MyMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\boardScene\BlockData.h">
+    <ClInclude Include="source\boardScene\model\BlockData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\boardScene\ScoreWidget.h">

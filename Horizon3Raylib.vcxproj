@@ -149,9 +149,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\boardScene\Board.cpp" />
-    <ClCompile Include="source\boardScene\BlockData.cpp" />
+    <ClCompile Include="source\boardScene\model\BlockData.cpp" />
     <ClCompile Include="source\EndMenu.cpp" />
-    <ClCompile Include="source\boardScene\GameModel.cpp" />
+    <ClCompile Include="source\boardScene\model\GameModel.cpp" />
     <ClCompile Include="source\GameScreen.cpp" />
     <ClCompile Include="source\boardScene\GameTimer.cpp" />
     <ClCompile Include="source\GlobalState.cpp" />
@@ -164,9 +164,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\boardScene\Board.h" />
-    <ClInclude Include="source\boardScene\BlockData.h" />
+    <ClInclude Include="source\boardScene\model\BlockData.h" />
     <ClInclude Include="source\EndMenu.h" />
-    <ClInclude Include="source\boardScene\GameModel.h" />
+    <ClInclude Include="source\boardScene\model\GameModel.h" />
     <ClInclude Include="source\GameScreen.h" />
     <ClInclude Include="source\GameSettings.h" />
     <ClInclude Include="source\boardScene\GameTimer.h" />
