@@ -84,7 +84,7 @@ void BoardState::DrawBonusIcon(BoardContext* context, shared_ptr<BlockData> bloc
 		{
 			rotation = 90.0f;
 		}
-	} 
+	}
 	else if (shared_ptr<BombBonus> line = dynamic_pointer_cast<BombBonus>(block->Bonus))
 	{
 		texture = context->BombTexture;
@@ -101,7 +101,7 @@ void BoardState::DrawBonusIcon(BoardContext* context, shared_ptr<BlockData> bloc
 		width,
 		height
 	};
-	DrawTexturePro(texture.value(), {0, 0, width, height}, dest, context->BlockOrigin, rotation, WHITE);
+	DrawTexturePro(texture.value(), { 0, 0, width, height }, dest, context->BlockOrigin, rotation, WHITE);
 }
 
 IdleState::IdleState(unique_ptr<IdleTurn>&& turn) : _turn(move(turn)) {}
@@ -110,15 +110,15 @@ void IdleState::Update(const float delta, BoardContext* context)
 {
 	bool buttonPressed = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
 	Point mousePosition(GetMousePosition());
-	if (!_wasButtonPressed && buttonPressed && BoardContext::GridRectangle.Contains(mousePosition)) 
+	if (!_wasButtonPressed && buttonPressed && BoardContext::GridRectangle.Contains(mousePosition))
 	{
 		Point click = (mousePosition - BoardContext::Padding) / GameSettings::BlockSize;
 		if (
 			IsBlockSelected() && context->Model.SwapBlocks(
-				_selectedIndex.ToIndex(GameSettings::GridSize), 
+				_selectedIndex.ToIndex(GameSettings::GridSize),
 				click.ToIndex(GameSettings::GridSize)
 			)
-		)
+			)
 		{
 			context->NextTurn();
 		}
@@ -128,11 +128,11 @@ void IdleState::Update(const float delta, BoardContext* context)
 	_wasButtonPressed = buttonPressed;
 }
 
-void IdleState::Draw(BoardContext* context) 
+void IdleState::Draw(BoardContext* context)
 {
-	for (int i = 0; i < _turn->Blocks.size(); i++) 
+	for (int i = 0; i < _turn->Blocks.size(); i++)
 	{
-		Vector2 position = (Point::FromIndex(i, GameSettings::GridSize) * 
+		Vector2 position = (Point::FromIndex(i, GameSettings::GridSize) *
 			GameSettings::BlockSize + BoardContext::Padding).ToVector2();
 		int type = _turn->Blocks[i]->Type;
 		DrawTextureV(context->MarbleTextures[type], position, WHITE);
@@ -149,7 +149,7 @@ bool IdleState::IsBlockSelected()
 	return _selectedIndex.X != -1 || _selectedIndex.Y != -1;
 }
 
-CascadeState::CascadeState(unique_ptr<CascadeTurn>&& turn) : _turn(move(turn)) 
+CascadeState::CascadeState(unique_ptr<CascadeTurn>&& turn) : _turn(move(turn))
 {
 	for (const shared_ptr<Bonus>& bonus : _turn->Bonuses)
 	{
@@ -165,7 +165,7 @@ void CascadeState::Update(const float time, BoardContext* context)
 	{
 		_shrinkGrid[index] = _localShrink;
 	}
-	for (unique_ptr<BonusAnimation>& bonus : _bonuses) 
+	for (unique_ptr<BonusAnimation>& bonus : _bonuses)
 	{
 		bonus->Update(time, _shrinkGrid);
 	}
@@ -177,21 +177,21 @@ void CascadeState::Draw(BoardContext* context)
 {
 	for (int i = 0; i < _turn->Blocks.size(); i++)
 	{
-		Vector2 position = (Point::FromIndex(i, GameSettings::GridSize) * 
+		Vector2 position = (Point::FromIndex(i, GameSettings::GridSize) *
 			GameSettings::BlockSize + BoardContext::Padding).ToVector2();
 		int type = _turn->Blocks[i]->Type;
 		float size = 1.0f - _shrinkGrid[i];
 		Texture2D& texture = context->MarbleTextures[type];
 		float width = static_cast<float>(texture.width);
 		float height = static_cast<float>(texture.height);
-		Rectangle dest = 
-		{ 
+		Rectangle dest =
+		{
 			position.x + width - width * size / 2,
 			position.y + height - height * size / 2,
-			width * size, 
-			height * size 
+			width * size,
+			height * size
 		};
-		DrawTexturePro(texture,	{ 0, 0, width, height }, dest, context->BlockOrigin, 0.0f, WHITE);
+		DrawTexturePro(texture, { 0, 0, width, height }, dest, context->BlockOrigin, 0.0f, WHITE);
 		DrawBonusIcon(context, _turn->Blocks[i], position);
 	}
 	for (unique_ptr<BonusAnimation>& bonus : _bonuses)
@@ -229,7 +229,7 @@ void DropState::Draw(BoardContext* context)
 	{
 		if (!_turn->Blocks[i]->Alive) continue;
 		int type = _turn->Blocks[i]->Type;
-		Vector2 position = (Point::FromIndex(i, GameSettings::GridSize) * 
+		Vector2 position = (Point::FromIndex(i, GameSettings::GridSize) *
 			GameSettings::BlockSize + BoardContext::Padding).ToVector2();
 		if (_turn->Drop.contains(i)) position += Vector2(0, _displacement);
 		DrawTextureV(context->MarbleTextures[type], position, WHITE);
@@ -237,8 +237,8 @@ void DropState::Draw(BoardContext* context)
 	}
 }
 
-SwapState::SwapState(unique_ptr<SwapTurn>&& turn) : 
-	_turn(move(turn)), 
+SwapState::SwapState(unique_ptr<SwapTurn>&& turn) :
+	_turn(move(turn)),
 	_direction(
 		Point::FromIndex(turn->First, GameSettings::GridSize).ToVector2() -
 		Point::FromIndex(turn->Second, GameSettings::GridSize).ToVector2()
@@ -311,7 +311,7 @@ void LineBonusAnimation::Update(float delta, array<float, GameSettings::NumberOf
 	}
 
 	ShrinkBlocks(delta, shrink);
-	for (int index : _activeChilds) 
+	for (int index : _activeChilds)
 	{
 		_childs[index]->Update(delta, shrink);
 	}
@@ -442,7 +442,7 @@ void BombBonusAnimation::ShrinkBlocks(float time, array<float, GameSettings::Num
 {
 	float delta = time * GameSettings::AnimationSpeed;
 	_shrinkSize = MoveTowards(_shrinkSize, CascadeState::TargetSizeShrink, delta);
-	for (int index : _data->Dead) 
+	for (int index : _data->Dead)
 	{
 		shrink[index] = _shrinkSize;
 	}

@@ -39,7 +39,7 @@ unique_ptr<ITurn> GameModel::GetNextTurn()
 		CreateBlocksInFirstRow();
 		_dropList.clear();
 		MakeDropList(_dropList);
-		if (_dropList.size() > 0) 
+		if (_dropList.size() > 0)
 		{
 			return make_unique<DropTurn>(_blocks, _dropList);
 		}
@@ -48,7 +48,7 @@ unique_ptr<ITurn> GameModel::GetNextTurn()
 		_state = _matches.size() > 0 ? Matches : Idle;
 		return GetNextTurn();
 	case Idle:
-		if (_swap) 
+		if (_swap)
 		{
 			_state = Swap;
 			return GetNextTurn();
@@ -66,7 +66,7 @@ unique_ptr<ITurn> GameModel::GetNextTurn()
 	case BackSwap:
 		FindMatches(_matches);
 		_state = _matches.size() > 0 ? Matches : Idle;
-		if (_state == Matches) 
+		if (_state == Matches)
 		{
 			_swap.reset();
 			return GetNextTurn();
@@ -204,7 +204,7 @@ void GameModel::DropBlocks(unordered_set<int>& dropList)
 		}
 	}
 
-	for (auto& [index, block] : dropMap) 
+	for (auto& [index, block] : dropMap)
 	{
 		int lowerIndex = index + GameSettings::GridSize;
 		_blocks[lowerIndex] = move(block);
@@ -247,7 +247,7 @@ int GameModel::ExecuteBonuses(vector<shared_ptr<Bonus>>& bonuses)
 
 void GameModel::RestoreBonusBlocks(vector<int>& dead)
 {
-	for(int index : dead)
+	for (int index : dead)
 	{
 		if (_blocks[index]->Bonus) _blocks[index]->Alive = true;
 	}
@@ -256,7 +256,7 @@ void GameModel::RestoreBonusBlocks(vector<int>& dead)
 IdleTurn::IdleTurn(array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks) : Blocks(blocks) { }
 
 CascadeTurn::CascadeTurn(
-	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, 
+	array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks,
 	vector<shared_ptr<Bonus>> bonuses,
 	vector<int>& dead
 ) : Blocks(blocks), Bonuses(bonuses), Dead(dead) {}
@@ -295,7 +295,7 @@ int MatchChain::Execute()
 			else
 				block->Bonus.reset(new LineBonus(Vertical));
 		}
-		else 
+		else
 		{
 			block->Bonus.reset();
 		}

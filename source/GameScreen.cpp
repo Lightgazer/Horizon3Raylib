@@ -13,7 +13,7 @@ void GameScreen::ReStart()
 
 void GameScreen::Update(const float delta)
 {
-	if (_timer.IsTimeout()) 
+	if (_timer.IsTimeout())
 	{
 		RequestNextState();
 	}

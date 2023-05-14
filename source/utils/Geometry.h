@@ -52,7 +52,7 @@ struct IntRect
 	Point Size;
 
 	bool Contains(const Point point) const {
-		if (Location.X <= point.X && point.X < Location.X + Size.X && Location.Y <= point.Y) 
+		if (Location.X <= point.X && point.X < Location.X + Size.X && Location.Y <= point.Y)
 		{
 			return point.Y < Location.Y + Size.Y;
 		}

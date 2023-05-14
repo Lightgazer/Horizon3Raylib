@@ -2,7 +2,7 @@
 
 using namespace std;
 
-EndMenu::EndMenu() 
+EndMenu::EndMenu()
 {
 	Point center = Point(GameSettings::Width / 2, GameSettings::Height / 2);
 	Point someSpace = Point(0, center.Y / 4);

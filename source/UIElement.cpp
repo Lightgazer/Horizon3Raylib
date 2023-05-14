@@ -1,6 +1,6 @@
 #include "UIElement.h"
 
-UIElement::UIElement(Texture2D texture, Point position) : _texture(texture) 
+UIElement::UIElement(Texture2D texture, Point position) : _texture(texture)
 {
 	Point size = Point(texture.width, texture.height);
 	Point location = position - size / 2;

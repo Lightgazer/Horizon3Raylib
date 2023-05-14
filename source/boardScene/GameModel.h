@@ -51,7 +51,7 @@ public:
 	vector<int> Dead;
 
 	CascadeTurn(
-		array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks, 
+		array<shared_ptr<BlockData>, GameSettings::NumberOfBlocks>& blocks,
 		vector<shared_ptr<Bonus>> bonuses,
 		vector<int>& dead
 	);
